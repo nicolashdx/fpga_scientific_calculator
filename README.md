@@ -37,7 +37,7 @@ Este projeto é uma calculadora científica implementada em VHDL, utilizando um 
 - **Igor**:
   - Módulo do display LCD 16x2.
   - Configuração para exibição.
-  **Todos**:
+- **Todos**:
   - Integração e documentação final.
 
 ## **Instruções para Uso**
