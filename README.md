@@ -30,15 +30,15 @@ Este projeto é uma calculadora científica implementada em VHDL, utilizando um 
 
 ### **Responsabilidades**
 - **Nicolas**:
-  - Módulo da Unidade de Operação Matemática (UOM).
+  - Módulo do display LCD 16x2.
+  - Configuração para exibição.
   - Integração e documentação final.
 - **Pedro**:
   - Módulo do teclado matricial.
   - Decodificação de entradas.
   - Integração e documentação final.
 - **Igor**:
-  - Módulo do display LCD 16x2.
-  - Configuração para exibição.
+  - Módulo da Unidade de Operação Matemática (UOM).
   - Integração e documentação final.
 
 ## **Instruções para Uso**
