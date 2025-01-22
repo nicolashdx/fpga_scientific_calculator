@@ -38,7 +38,7 @@ Este projeto é uma calculadora científica implementada em VHDL, utilizando um 
   - Decodificação de entradas.
   - Integração e documentação final.
 - **Igor**:
-  - Módulo da Unidade de Operação Matemática (UOM).
+  - Módulo da Unidade de Operações Matemáticas.
   - Integração e documentação final.
 
 ## **Instruções para Uso**
@@ -55,8 +55,8 @@ Os módulos foram compilados no software Quartus Prime 20.1, simulados no ModelS
 
 ## **Contribuições**
 Este projeto foi desenvolvido por:
-- Nicolas Henrique: UOM, integração e documentação.
-- Igor: Teclado matricial e decodificação.
-- Pedro: Display LCD e simulação.
+- Nicolas Henrique: Módulo do display LCD 16x2, integração e documentação.
+- Igor: Módulo da Unidade de Operações Matemáticas, integração e documentação.
+- Pedro: Teclado matricial e decodificação.
 
 ---
