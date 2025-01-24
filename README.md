@@ -8,6 +8,7 @@ Este projeto é uma calculadora científica implementada em VHDL, utilizando um 
   - FPGA com suporte a VHDL.
   - Display LCD 16x2 compatível.
   - Teclado matricial 4x4.
+  - DE2 [EP2C35F672C6N]
 
 - **Funcionalidades**:
   - Operações básicas: soma, subtração, multiplicação, divisão.
@@ -36,6 +37,7 @@ Este projeto é uma calculadora científica implementada em VHDL, utilizando um 
 - **Pedro**:
   - Módulo do teclado matricial.
   - Decodificação de entradas.
+  - Debouncer
   - Integração e documentação final.
 - **Igor**:
   - Módulo da Unidade de Operações Matemáticas.
@@ -51,12 +53,12 @@ Este projeto é uma calculadora científica implementada em VHDL, utilizando um 
    - O resultado será exibido no display LCD.
 
 ## **Testes e Validação**
-Os módulos foram compilados no software Quartus Prime 20.1, simulados no ModelSim e testados diretamente no hardware para garantir funcionalidade.
+Os módulos foram compilados no software Quartus Prime 13, simulados no ModelSim e testados diretamente no hardware para garantir funcionalidade.
 
 ## **Contribuições**
 Este projeto foi desenvolvido por:
 - Nicolas Henrique: Módulo do display LCD 16x2, integração e documentação.
 - Igor: Módulo da Unidade de Operações Matemáticas, integração e documentação.
-- Pedro: Teclado matricial e decodificação.
+- Pedro: Teclado matricial, debouncer, decodificação, integração e documentação
 
 ---
