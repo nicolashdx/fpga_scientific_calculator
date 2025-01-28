@@ -1,0 +1,72 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity debounce is
+    Port (
+        clk : in std_logic;                        -- Clock
+        keypad_debounce : in std_logic_vector(15 downto 0); -- Entrada do teclado (pré-debounced)
+        keypad_decode : out std_logic_vector(15 downto 0)   -- Tecla decodificada (pós-debounce)
+    );
+end debounce;
+
+architecture Behavioral of debounce is
+    signal input_test : std_logic_vector(15 downto 0) := (others => '0'); -- Registro temporário
+    signal counter : integer := 0;                                      -- Contador para debounce
+    signal debounce_state : std_logic_vector(1 downto 0) := "00";        -- Estado atual do debounce
+    constant countupto : integer := 1000;                                -- Limite do contador
+begin
+
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            case debounce_state is
+                -- Estado 00: Sem tecla pressionada (Idle)
+                when "00" =>
+                    if keypad_debounce = (others => '0') then
+                        debounce_state <= "00"; -- Fica em Idle
+                    else
+                        input_test <= keypad_debounce; -- Armazena tecla pressionada
+                        debounce_state <= "01"; -- Transita para validação
+                        counter <= 0;
+                        keypad_decode <= (others => '0'); -- Limpa saída
+                    end if;
+
+                -- Estado 01: Validando a tecla pressionada
+                when "01" =>
+                    if input_test /= keypad_debounce then
+                        debounce_state <= "00"; -- Se tecla mudou, volta ao Idle
+                    else
+                        counter <= counter + 1;
+                        if counter > countupto then
+                            debounce_state <= "10"; -- Tecla validada
+                        end if;
+                    end if;
+
+                -- Estado 10: Transição antes de verificar a liberação
+                when "10" =>
+                    debounce_state <= "11"; -- Prepara-se para verificar a liberação
+                    counter <= 0;
+
+                -- Estado 11: Detectando a liberação da tecla
+                when "11" =>
+                    if keypad_debounce = (others => '0') then
+                        counter <= counter + 1;
+                        if counter > countupto then
+                            keypad_decode <= input_test; -- Armazena a tecla decodificada
+                            input_test <= (others => '0');
+                            debounce_state <= "00"; -- Retorna ao estado inicial
+                            counter <= 0;
+                        end if;
+                    else
+                        counter <= 0; -- Se tecla ainda estiver pressionada, zera contador
+                    end if;
+
+                -- Estado padrão: Reinicia
+                when others =>
+                    debounce_state <= "00";
+            end case;
+        end if;
+    end process;
+
+end Behavioral;
