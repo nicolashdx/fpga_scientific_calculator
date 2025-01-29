@@ -4,87 +4,167 @@
 			"name" : "Top",
 			"pins" : [
 				{
-					"name" : "LCD_DATA[0]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_DATA[1]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_DATA[2]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_DATA[3]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_DATA[4]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_DATA[5]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_DATA[6]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_DATA[7]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_EN",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_RS",
-					"strict" : false
-				},
-				{
-					"name" : "reset",
-					"strict" : false
-				},
-				{
 					"name" : "write_en",
 					"strict" : false
 				},
 				{
-					"name" : "Clk50Mhz",
+					"name" : "ascii_out[0]",
 					"strict" : false
 				},
 				{
-					"name" : "DATA[0]",
+					"name" : "ascii_out[1]",
 					"strict" : false
 				},
 				{
-					"name" : "DATA[7]",
+					"name" : "ascii_out[2]",
 					"strict" : false
 				},
 				{
-					"name" : "DATA[6]",
+					"name" : "ascii_out[3]",
 					"strict" : false
 				},
 				{
-					"name" : "DATA[4]",
+					"name" : "ascii_out[4]",
 					"strict" : false
 				},
 				{
-					"name" : "DATA[5]",
+					"name" : "ascii_out[5]",
 					"strict" : false
 				},
 				{
-					"name" : "DATA[2]",
+					"name" : "ascii_out[6]",
 					"strict" : false
 				},
 				{
-					"name" : "DATA[3]",
+					"name" : "ascii_out[7]",
 					"strict" : false
 				},
 				{
-					"name" : "DATA[1]",
+					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Exponent[0]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Exponent[5]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Exponent[4]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Exponent[3]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Exponent[2]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Exponent[1]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Exponent[6]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Exponent[7]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[0]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[1]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[2]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[3]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[4]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[5]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[6]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[7]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[8]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[9]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[10]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[11]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[12]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[13]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[14]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[15]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[16]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[17]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[18]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[19]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[20]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[21]",
+					"strict" : false
+				},
+				{
+					"name" : "ieee754_in.Mantissa[22]",
 					"strict" : false
 				}
 			]
