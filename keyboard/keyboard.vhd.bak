@@ -1,0 +1,112 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity keypad_with_switches is
+    Port (
+        clk : in std_logic;                            -- Clock
+        row : in std_logic_vector(3 downto 0);         -- Linhas do teclado
+        column : out std_logic_vector(3 downto 0);     -- Colunas do teclado
+        switches : in std_logic_vector(9 downto 0);    -- Entradas dos switches
+        decode : out std_logic_vector(15 downto 0);    -- Tecla pressionada (teclado matricial)
+        operation : out std_logic_vector(3 downto 0)   -- Operação selecionada (4 bits)
+    );
+end keypad_with_switches;
+
+architecture Behavioral of keypad_with_switches is
+    signal column_int : std_logic_vector(3 downto 0) := "1111"; -- Coluna atual sendo escaneada
+    signal key_pressed : std_logic_vector(15 downto 0) := (others => '0'); -- Teclas pressionadas
+    signal key_stored : std_logic_vector(15 downto 0) := (others => '0');  -- Tecla decodificada
+    signal clock_count : integer := 0;                   -- Contador de clock
+    signal rows_int : std_logic_vector(3 downto 0);      -- Linhas internas para leitura
+    signal op_selected : std_logic_vector(3 downto 0);  -- Operação selecionada
+begin
+
+    -- Atualiza as linhas lidas
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            rows_int <= row;
+        end if;
+    end process;
+
+    -- Varredura das colunas e leitura das linhas
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            if clock_count < 50 then
+                clock_count <= clock_count + 1;
+            else
+                clock_count <= 0;
+
+                case column_int is
+                    when "1111" =>
+                        key_stored <= key_pressed;  -- Armazena tecla pressionada
+                        key_pressed <= (others => '0'); -- Limpa registro
+                        column_int <= "0111";  -- Seleciona a próxima coluna
+
+                    when "0111" =>
+                        key_pressed(0) <= not rows_int(0); -- Linha 0, Coluna 0
+                        key_pressed(4) <= not rows_int(1); -- Linha 1, Coluna 0
+                        key_pressed(8) <= not rows_int(2); -- Linha 2, Coluna 0
+                        key_pressed(12) <= not rows_int(3); -- Linha 3, Coluna 0
+                        column_int <= "1011"; -- Avança para a próxima coluna
+
+                    when "1011" =>
+                        key_pressed(1) <= not rows_int(0); -- Linha 0, Coluna 1
+                        key_pressed(5) <= not rows_int(1); -- Linha 1, Coluna 1
+                        key_pressed(9) <= not rows_int(2); -- Linha 2, Coluna 1
+                        key_pressed(13) <= not rows_int(3); -- Linha 3, Coluna 1
+                        column_int <= "1101"; -- Avança para a próxima coluna
+
+                    when "1101" =>
+                        key_pressed(2) <= not rows_int(0); -- Linha 0, Coluna 2
+                        key_pressed(6) <= not rows_int(1); -- Linha 1, Coluna 2
+                        key_pressed(10) <= not rows_int(2); -- Linha 2, Coluna 2
+                        key_pressed(14) <= not rows_int(3); -- Linha 3, Coluna 2
+                        column_int <= "1110"; -- Avança para a próxima coluna
+
+                    when "1110" =>
+                        key_pressed(3) <= not rows_int(0); -- Linha 0, Coluna 3
+                        key_pressed(7) <= not rows_int(1); -- Linha 1, Coluna 3
+                        key_pressed(11) <= not rows_int(2); -- Linha 2, Coluna 3
+                        key_pressed(15) <= not rows_int(3); -- Linha 3, Coluna 3
+                        column_int <= "1111"; -- Reinicia a varredura
+
+                    when others =>
+                        column_int <= "1111";
+                end case;
+            end if;
+        end if;
+    end process;
+
+    -- Atualiza a saída das colunas e a tecla decodificada
+    column <= column_int;
+    decode <= key_stored;
+
+    -- Decodificação das operações via switches
+    process(switches)
+    begin
+        if switches(9) = '0' then  -- Operações básicas
+            case switches(3 downto 0) is
+                when "0001" => op_selected <= "0001"; -- Adição
+                when "0010" => op_selected <= "0010"; -- Subtração
+                when "0100" => op_selected <= "0011"; -- Multiplicação
+                when "1000" => op_selected <= "0100"; -- Divisão
+                when others => op_selected <= "0000"; -- Sem operação
+            end case;
+        else  -- Operações especiais
+            case switches(3 downto 0) is
+                when "0001" => op_selected <= "0101"; -- Logaritmo base 2
+                when "0010" => op_selected <= "0110"; -- Potência
+                when "0100" => op_selected <= "0111"; -- Fatorial
+                when "1000" => op_selected <= "1000"; -- Conversão graus para radianos
+                when others => op_selected <= "0000"; -- Sem operação
+            end case;
+        end if;
+    end process;
+
+    -- Atualiza a operação selecionada
+    operation <= op_selected;
+
+end Behavioral;
