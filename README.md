@@ -7,7 +7,7 @@ Este projeto é uma calculadora científica implementada em VHDL, utilizando um 
 - **Hardware**:
   - FPGA com suporte a VHDL.
   - Display LCD 16x2 compatível.
-  - Teclado matricial 4x4.
+  - Teclado matricial 4x3.
   - DE2 [EP2C35F672C6N]
 
 - **Funcionalidades**:
