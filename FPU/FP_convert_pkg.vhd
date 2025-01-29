@@ -10,6 +10,10 @@ package FP_convert_pkg is
 	constant len_bin : integer := 5 + E + M;       -- String Size
 	subtype string_bin is string(1 to len_bin);
 	
+	-- Parte inteira: 1, parte fracionaria: 5, parte exponencial: 2
+	constant len_dec : integer := 12;       -- String Size
+	subtype string_dec is string(1 to len_bin);
+	
 	-- Converte um float para uma string(Sinal & '1.' & Mantissae & Expoente)
 	function float_to_str_bin (
 		a : in float)
@@ -18,6 +22,10 @@ package FP_convert_pkg is
 	-- Converte uma string(Sinal & '1.' & Mantissae & Expoente) para um float
 	function str_bin_to_float (
 		a : in string_bin)
+		return float;
+	
+	function str_to_float(
+		a :in string_dec)
 		return float;
 end package FP_convert_pkg;
 
@@ -131,6 +139,51 @@ package body FP_convert_pkg is
 		
 		result.Mantissa := mantissa_bin;
 
+		return result;
+	end;
+	
+	function str_to_float(
+		a : in string_dec)
+		return float is
+
+		variable result : float := float_zero;
+		
+		variable parte_int : std_logic_vector(3 downto 0) := (others => '0');
+		variable parte_frac : std_logic_vector(M-4 downto 0) := (others => '0');
+		
+		constant max_frac : integer := 100000;
+		variable parte_frac_dec : integer := 0;
+	begin
+		-- Bit de sinal
+		if a(1) = '+' then
+			result.Sign_bit := '0';
+		else
+			result.Sign_bit := '1';
+		end if;
+		
+		-- Calculo da parte inteira
+		parte_int := std_logic_vector(to_unsigned(character'pos(a(2)), 4));
+
+		-- Calculo da parte fracionaria
+		for i in 4 to 8 loop
+			parte_frac_dec := parte_frac_dec + character'pos(a(i));
+			parte_frac_dec := parte_frac_dec*10;
+		end loop;
+
+		for i in M-4 downto 0 loop
+			parte_frac_dec := parte_frac_dec * 2;
+
+			if parte_frac_dec < max_frac then 
+				parte_frac(i) := '0';
+			else 
+				parte_frac(i) := '1';
+				parte_frac_dec := parte_frac_dec - max_frac;
+			end if;
+		end loop;
+		
+		result.Exponent(3 downto 0) := parte_int;
+		result.Mantissa(M-4 downto 0) := parte_frac;
+		
 		return result;
 	end;
 end package body FP_convert_pkg;

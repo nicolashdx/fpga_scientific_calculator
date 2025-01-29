@@ -1,0 +1,173 @@
+m255
+K3
+13
+cModel Technology
+Z0 dC:\Users\Aluno\Documents\NIP\fpga_scientific_calculator-main\FPU\simulation\modelsim
+Pfloatpoint_package
+Z1 DPx4 ieee 11 numeric_std 0 22 O3PF8EB`?j9=z7KT`fn941
+Z2 DPx3 std 6 textio 0 22 5>J:;AW>W0[[dW0I6EN1Q0
+Z3 DPx4 ieee 14 std_logic_1164 0 22 5=aWaoGZSMWIcH0i^f`XF1
+Z4 w1738171070
+Z5 dC:\Users\Aluno\Documents\NIP\fpga_scientific_calculator-main\FPU\simulation\modelsim
+Z6 8C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/FloatPoint_package.vhd
+Z7 FC:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/FloatPoint_package.vhd
+l0
+L5
+V>I@SN_4W;[agjG1lO:Q:g2
+Z8 OV;C;10.1d;51
+31
+b1
+Z9 !s108 1738179895.066000
+Z10 !s90 -reportprogress|300|-93|-work|work|C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/FloatPoint_package.vhd|
+Z11 !s107 C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/FloatPoint_package.vhd|
+Z12 o-93 -work work -O0
+Z13 tExplicit 1
+!s100 K8bhLW?c3TEG]YYWaUDON3
+!i10b 1
+Bbody
+Z14 DPx4 work 18 floatpoint_package 0 22 >I@SN_4W;[agjG1lO:Q:g2
+R1
+R2
+R3
+l0
+L104
+Vb>=J1h>k`S2Qaa6eZ0daa3
+R8
+31
+R9
+R10
+R11
+R12
+R13
+nbody
+!s100 gLAEC7U`hmlaAjS3D]m:`3
+!i10b 1
+Pfp_convert_pkg
+R14
+Z15 DPx4 ieee 16 std_logic_textio 0 22 ?Il0a149GV276[?[UMDWh2
+R1
+R2
+R3
+Z16 w1738179156
+R5
+Z17 8C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/FP_convert_pkg.vhd
+Z18 FC:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/FP_convert_pkg.vhd
+l0
+L9
+VD::WCRRXk:XgMFM=m1O0G2
+R8
+31
+b1
+Z19 !s108 1738179895.518000
+Z20 !s90 -reportprogress|300|-93|-work|work|C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/FP_convert_pkg.vhd|
+Z21 !s107 C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/FP_convert_pkg.vhd|
+R12
+R13
+!s100 GR6GbBaEcMmI:_2LQf=7U0
+!i10b 1
+Bbody
+Z22 DPx4 work 14 fp_convert_pkg 0 22 D::WCRRXk:XgMFM=m1O0G2
+R14
+R15
+R1
+R2
+R3
+l0
+L32
+Vk1?KTY_agLnJ4_4THoJKf0
+R8
+31
+R19
+R20
+R21
+R12
+R13
+nbody
+!s100 z;Y[AB`92L7j^2Z[N@H@I1
+!i10b 1
+Esin_cos_tb
+Z23 w1738154730
+R15
+R22
+R14
+R1
+R2
+R3
+R5
+Z24 8C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/sin_cos_tb.vhd
+Z25 FC:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/sin_cos_tb.vhd
+l0
+L9
+VfgzFHW[RK;gAhX_ReHFzS0
+!s100 I6c2PKY;:]L7jc^KBTbP03
+R8
+31
+!i10b 1
+Z26 !s108 1738179896.268000
+Z27 !s90 -reportprogress|300|-93|-work|work|C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/sin_cos_tb.vhd|
+Z28 !s107 C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/sin_cos_tb.vhd|
+R12
+R13
+Abehavior
+R15
+R22
+R14
+R1
+R2
+R3
+DEx4 work 10 sin_cos_tb 0 22 fgzFHW[RK;gAhX_ReHFzS0
+l32
+L12
+Vfo=CSSXnn1oDBnDIMf3RG3
+!s100 KzdKa=99k95fWSP=VZFlo1
+R8
+31
+!i10b 1
+R26
+R27
+R28
+R12
+R13
+Etest2
+Z29 w1738168532
+R15
+R22
+R14
+R1
+R2
+R3
+R5
+Z30 8C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/test2.vhd
+Z31 FC:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/test2.vhd
+l0
+L9
+V:7eCPKffDeKJ7BLC2B4Va2
+R8
+31
+Z32 !s108 1738179895.939000
+Z33 !s90 -reportprogress|300|-93|-work|work|C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/test2.vhd|
+Z34 !s107 C:/Users/Aluno/Documents/NIP/fpga_scientific_calculator-main/FPU/test2.vhd|
+R12
+R13
+!s100 Ko5DPPbc2LZiJ@V44KUCl0
+!i10b 1
+Artl
+R15
+R22
+R14
+R1
+R2
+R3
+DEx4 work 5 test2 0 22 :7eCPKffDeKJ7BLC2B4Va2
+l18
+L17
+VLbITO?]@B`2COYZcD5N>V2
+R8
+31
+R32
+R33
+R34
+R12
+R13
+!s100 ThDBlgHkloNdkFAAzb5Md3
+!i10b 1

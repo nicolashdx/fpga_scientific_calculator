@@ -1,0 +1,30 @@
+LIBRARY IEEE;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+Entity Multiplicadora is
+	port(
+		a : integer;
+		b : integer 
+	);
+end caixa_registradora;
+
+architecture rtl of caixa_registradora is
+begin
+	process(clock, update, operacao, data_in)
+		variable data	: integer range -size to size;
+	begin
+		if rising_edge(clock) and (update = '1') then
+			if reset = '1' then
+			   data := 0;
+			elsif operacao = '0' then
+				data := data + data_in;
+			elsif operacao = '1' then
+				data := data - data_in;
+			end if;
+		end if;
+				
+		data_out <= data;
+	end process;
+ 
+end rtl;

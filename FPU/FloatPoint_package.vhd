@@ -7,7 +7,7 @@ package FloatPoint_package is
 	constant Bias : integer := 127;	--	Exponent Bias
 	constant M : integer := 23;		-- Significand bits
 	
-	type Operation is (Sum, Sub, Mul, Div, Cos, Sin, Sqrt);
+	type Operation is (Sum, Sub, Mul, Div, Cos, Sin, Sqrt, Log, Zero);
 	
 	type float is record
 		Sign_bit : std_logic;

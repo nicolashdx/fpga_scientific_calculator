@@ -1,0 +1,72 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library work;
+use work.FloatPoint_package.all;
+
+entity mult_tb is
+end mult_tb;
+
+architecture behavior of mult_tb is
+
+    -- Component Declaration for the Unit Under Test (UUT)
+    component test
+        port(
+            a : in float;
+            b : in float;
+            c : out float
+        );
+    end component;
+
+    -- Testbench Signals
+    signal a_tb : float := (others => '0');
+    signal b_tb : float := (others => '0');
+    signal c_tb : float;
+
+begin
+
+    -- Instantiate the Unit Under Test (UUT)
+    uut: test
+        port map (
+            a => a_tb,
+            b => b_tb,
+            c => c_tb
+        );
+
+    -- Test Process
+    stim_proc: process
+    begin
+        -- Test Case 1: a = 2.5, b = 3.0
+        a_tb <= to_float(2.5);  -- Converte para o tipo float definido no pacote
+        b_tb <= to_float(3.0);
+        wait for 10 ns;
+        assert to_real(c_tb) = 7.5
+        report "Test Case 1 Failed" severity error;
+
+        -- Test Case 2: a = -1.5, b = 4.0
+        a_tb <= to_float(-1.5);
+        b_tb <= to_float(4.0);
+        wait for 10 ns;
+        assert to_real(c_tb) = -6.0
+        report "Test Case 2 Failed" severity error;
+
+        -- Test Case 3: a = 0.0, b = 5.0
+        a_tb <= to_float(0.0);
+        b_tb <= to_float(5.0);
+        wait for 10 ns;
+        assert to_real(c_tb) = 0.0
+        report "Test Case 3 Failed" severity error;
+
+        -- Test Case 4: a = 1.0, b = -1.0
+        a_tb <= to_float(1.0);
+        b_tb <= to_float(-1.0);
+        wait for 10 ns;
+        assert to_real(c_tb) = -1.0
+        report "Test Case 4 Failed" severity error;
+
+        -- Test completed
+        wait;
+    end process;
+
+end behavior;
