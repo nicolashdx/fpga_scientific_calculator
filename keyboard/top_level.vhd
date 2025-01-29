@@ -13,7 +13,10 @@ entity top_level is
         col : in std_logic_vector(2 downto 0);
 		  switches : in std_logic_vector(11 downto 0);
 		  op : out Operation;
-        decoded_key : out std_logic_vector(3 downto 0)
+        decoded_key : out std_logic_vector(3 downto 0);
+		  
+		  VCC : out std_logic;
+		  GROUND : out std_logic
     );
 end top_level;
 
@@ -30,7 +33,9 @@ architecture Behavioral of top_level is
 	 component decodifier is
     Port (
 		switches : in std_logic_vector(11 downto 0);
-		op : out Operation
+		op : out Operation;
+		keypad_debounce : in std_logic_vector(11 downto 0);
+		decoded_key : out std_logic_vector(3 downto 0)
     );
 	 end component;
 	 
@@ -63,6 +68,11 @@ begin
     decodifier_inst : decodifier
         Port map (
 			  switches => switches,
-			  op => op
+			  op => op,
+			  keypad_debounce => debounced_key,
+			  decoded_key => decoded_key 
         );
+		  
+    VCC <= '1';
+	 GROUND <= '0';
 end Behavioral;

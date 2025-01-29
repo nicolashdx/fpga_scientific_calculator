@@ -29,7 +29,7 @@ begin
         end if;
     end process;
 
-    process(clk)
+    process(clk, column_int, rows_int)
     begin
         if rising_edge(clk) then
             if clock_count < 50 then
