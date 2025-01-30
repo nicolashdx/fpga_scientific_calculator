@@ -4,39 +4,51 @@
 			"name" : "Top",
 			"pins" : [
 				{
-					"name" : "write_en",
+					"name" : "col[0]",
 					"strict" : false
 				},
 				{
-					"name" : "ascii_out[0]",
+					"name" : "col[1]",
 					"strict" : false
 				},
 				{
-					"name" : "ascii_out[1]",
+					"name" : "col[2]",
 					"strict" : false
 				},
 				{
-					"name" : "ascii_out[2]",
+					"name" : "key_pressed[0]",
 					"strict" : false
 				},
 				{
-					"name" : "ascii_out[3]",
+					"name" : "key_pressed[1]",
 					"strict" : false
 				},
 				{
-					"name" : "ascii_out[4]",
+					"name" : "key_pressed[2]",
 					"strict" : false
 				},
 				{
-					"name" : "ascii_out[5]",
+					"name" : "key_pressed[3]",
 					"strict" : false
 				},
 				{
-					"name" : "ascii_out[6]",
+					"name" : "pressing",
 					"strict" : false
 				},
 				{
-					"name" : "ascii_out[7]",
+					"name" : "row[1]",
+					"strict" : false
+				},
+				{
+					"name" : "row[3]",
+					"strict" : false
+				},
+				{
+					"name" : "row[0]",
+					"strict" : false
+				},
+				{
+					"name" : "row[2]",
 					"strict" : false
 				},
 				{
@@ -44,127 +56,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "ieee754_in.Exponent[0]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Exponent[5]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Exponent[4]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Exponent[3]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Exponent[2]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Exponent[1]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Exponent[6]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Exponent[7]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[0]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[1]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[2]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[3]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[4]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[5]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[6]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[7]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[8]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[9]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[10]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[11]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[12]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[13]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[14]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[15]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[16]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[17]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[18]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[19]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[20]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[21]",
-					"strict" : false
-				},
-				{
-					"name" : "ieee754_in.Mantissa[22]",
+					"name" : "reset",
 					"strict" : false
 				}
 			]

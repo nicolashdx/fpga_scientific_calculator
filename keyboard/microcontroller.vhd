@@ -28,7 +28,6 @@ end process;
 process (state)
 begin
 	case state is
-	
 			when col1set =>
 				col <= "1110"; --set column 1 to zero
 				keyP <= '0';

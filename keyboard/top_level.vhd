@@ -8,25 +8,23 @@ use work.FP_convert_pkg.all;
 
 entity top_level is
     Port (
-        clk : in std_logic;
+        clk, reset : in std_logic;
         row : in std_logic_vector(3 downto 0);
-        col : in std_logic_vector(2 downto 0);
+        col : out std_logic_vector(2 downto 0);
 		  switches : in std_logic_vector(11 downto 0);
 		  op : out Operation;
-        decoded_key : out std_logic_vector(3 downto 0);
-		  
-		  VCC : out std_logic;
-		  GROUND : out std_logic
+        decoded_key : out std_logic_vector(3 downto 0)
     );
 end top_level;
 
 architecture Behavioral of top_level is
 	 component keyboard is
     Port (
-        clk : in std_logic;
-        row : in std_logic_vector(3 downto 0);
-        column : in std_logic_vector(2 downto 0);
-		  key_pressed : out std_logic_vector(11 downto 0)
+      clk, reset : in std_logic;
+		row : in std_logic_vector(3 downto 0);
+		col : out std_logic_vector(2 downto 0);
+		key_pressed : out std_logic_vector(3 downto 0);
+		pressing : out std_logic
     );
 	 end component;
 	 
@@ -54,8 +52,9 @@ begin
         Port map (
 			  clk => clk,
 			  row => row,
-           column => col,
-           key_pressed => key_pressed
+           col => col,
+           key_pressed => key_pressed,
+			  reset => reset
         );
 
     debounce_inst : debounce
@@ -72,7 +71,4 @@ begin
 			  keypad_debounce => debounced_key,
 			  decoded_key => decoded_key 
         );
-		  
-    VCC <= '1';
-	 GROUND <= '0';
 end Behavioral;
