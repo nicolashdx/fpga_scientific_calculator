@@ -6,7 +6,7 @@ library work;
 use work.FloatPoint_package.all;
 use work.FP_convert_pkg.all;
 
-entity FloatConvert_tb is
+entity FPU is
 end FloatConvert_tb;
 
 architecture behavior of FloatConvert_tb is
@@ -35,35 +35,38 @@ architecture behavior of FloatConvert_tb is
         Mantissa => ('1', '0', others => '0')
     );
 	 
+    signal test_string : string_bin;
+    signal converted_float : float;
+	 signal test_string_2 : string_bin;
 
 begin
     process
     begin
---        test_string <= float_to_str_bin(test_float_1);
---		  wait for 30 ns;
---		  converted_float <= str_bin_to_float(test_string);
---		  wait for 30 ns;
---		  test_string_2 <= float_to_str_bin(converted_float);
---		  wait for 30 ns;
---		  test_string <= float_to_str_bin(test_float_2);
---		  wait for 30 ns;
---		  converted_float <= str_bin_to_float(test_string);
---		  wait for 30 ns;
---		  test_string_2 <= float_to_str_bin(converted_float);
---		  wait for 30 ns;
---		  test_string <= float_to_str_bin(test_float_3);
---		  wait for 30 ns;
---		  converted_float <= str_bin_to_float(test_string);
---		  wait for 30 ns;
---		  test_string_2 <= float_to_str_bin(converted_float);
---		  wait for 30 ns;
---		  test_string <= float_to_str_bin(test_float_4);
---		  wait for 30 ns;
---		  converted_float <= str_bin_to_float(test_string);
---		  wait for 30 ns;
---		  test_string_2 <= float_to_str_bin(converted_float);
---		  wait for 30 ns;
---        wait;
+        test_string <= float_to_str_bin(test_float_1);
+		  wait for 30 ns;
+		  converted_float <= str_bin_to_float(test_string);
+		  wait for 30 ns;
+		  test_string_2 <= float_to_str_bin(converted_float);
+		  wait for 30 ns;
+		  test_string <= float_to_str_bin(test_float_2);
+		  wait for 30 ns;
+		  converted_float <= str_bin_to_float(test_string);
+		  wait for 30 ns;
+		  test_string_2 <= float_to_str_bin(converted_float);
+		  wait for 30 ns;
+		  test_string <= float_to_str_bin(test_float_3);
+		  wait for 30 ns;
+		  converted_float <= str_bin_to_float(test_string);
+		  wait for 30 ns;
+		  test_string_2 <= float_to_str_bin(converted_float);
+		  wait for 30 ns;
+		  test_string <= float_to_str_bin(test_float_4);
+		  wait for 30 ns;
+		  converted_float <= str_bin_to_float(test_string);
+		  wait for 30 ns;
+		  test_string_2 <= float_to_str_bin(converted_float);
+		  wait for 30 ns;
+        wait;
     end process;
 
 end behavior;

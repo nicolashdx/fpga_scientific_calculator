@@ -10,47 +10,51 @@ entity Float_and_str_tb is
 end Float_and_str_tb;
 
 architecture behavior of Float_and_str_tb is
-    -- Signals for testing
-    constant test_float_1 : float := (	-- +1.1e+11
-        Sign_bit => '0',
-        Exponent => "10000010",
-        Mantissa => "10000000000000000000000"
-    );
-	 
-	 constant test_float_2 : float := (	-- -1.01e-10
-        Sign_bit => '1',
-        Exponent => std_logic_vector(to_unsigned(Bias - 2, E)),
-        Mantissa => ('0', '1', others => '0')
-    );
-	 
-	 constant test_float_3 : float := (	-- 1.10e+1
-        Sign_bit => '0',
-        Exponent => std_logic_vector(to_unsigned(Bias + 1, E)),
-        Mantissa => ('1', '0', others => '0')
-    );
-	 
-	 constant test_float_4 : float := (	-- -1.10e+1
-        Sign_bit => '1',
-        Exponent => std_logic_vector(to_unsigned(Bias + 1, E)),
-        Mantissa => ('1', '0', others => '0')
-    );
-	 
-	 component test2 is
-		port(
-			s : in string_dec;
-			x : out float
-		);
-	 end component;
-	 
-	 signal fio_s : string_dec;
-	 signal fio_x : float;
+   signal fio_x : float;
+	signal fio_y : string_dec;
 	 
 begin
-	utt : test2 port map(
-		s => fio_s,
-		x => fio_x
-	);
-	
-   fio_s <= "+0.75000e+00";
-
+   process 
+	begin
+		fio_x <= str_to_float("+00000.00000");
+		wait for 10 ns;
+		fio_y <= float_to_str(fio_x);
+		wait for 10 ns;
+		
+		fio_x <= str_to_float("+00001.75000");
+		wait for 10 ns;
+		fio_y <= float_to_str(fio_x);
+		wait for 10 ns;
+		
+		fio_x <= str_to_float("+00000.75000");
+		wait for 10 ns;
+		fio_y <= float_to_str(fio_x);
+		wait for 10 ns;
+		
+		fio_x <= str_to_float("+00000.68000");
+		wait for 10 ns;
+		fio_y <= float_to_str(fio_x);
+		wait for 10 ns;
+		
+		fio_x <= str_to_float("+00020.00000");
+		wait for 10 ns;
+		fio_y <= float_to_str(fio_x);
+		wait for 10 ns;
+		
+		fio_x <= str_to_float("+00010.68000");
+		wait for 10 ns;
+		fio_y <= float_to_str(fio_x);
+		wait for 10 ns;
+		
+		fio_x <= str_to_float("-00128.50000");
+		wait for 10 ns;
+		fio_y <= float_to_str(fio_x);
+		wait for 10 ns;
+		
+		fio_x <= str_to_float("-00006.14159");
+		wait for 10 ns;
+		fio_y <= float_to_str(fio_x);
+		wait for 10 ns;
+		wait;
+	end process;
 end behavior;

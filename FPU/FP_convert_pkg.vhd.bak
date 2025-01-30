@@ -1,0 +1,206 @@
+LIBRARY IEEE;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+package FP_convert_pkg is
+	constant E : integer := 8;		-- Exponent Bits 
+	constant Bias : integer := 127;	--	Exponent Bias
+	constant M : integer := 23;		-- Significand bits
+	
+	type float is record
+		Sign_bit : std_logic;
+		Exponent : std_logic_vector(E-1 downto 0);
+		Mantissa : std_logic_vector(M-1 downto 0);
+	end record float; 
+
+	function float_sum (
+		a : in float; b : in float)
+		return float;
+
+	function float_product (
+		a : in float; 
+		b : in float)
+		return float;
+		
+	
+	constant len : integer := 1 + E + M;       -- String Size
+	subtype fixed_string is string(1 to len);
+	
+	function to_str (
+		a : in float)
+		return fixed_string;
+
+	function to_float (
+		a : in fixed_string)
+		return float;
+end package FP_convert_pkg;
+
+package body FP_convert_pkg is
+	function float_product (
+		a : in float; b : in float
+		)
+		return float is
+		
+		variable Result_mantissa : std_logic_vector(M downto 0);
+		variable intermediate_result : std_logic_vector(2*M+1 downto 0);
+		variable c : float;
+	begin
+		c.Sign_bit := (a.Sign_bit) xor (b.Sign_bit);
+		
+		intermediate_result := std_logic_vector((unsigned('1' & a.Mantissa)) * (unsigned('1' & b.Mantissa)));
+
+		Result_mantissa := intermediate_result(2*M downto M);
+		
+		if Result_mantissa(M) = '0' then
+        c.Mantissa := Result_mantissa(M-1 downto 0);
+        c.Exponent := std_logic_vector(unsigned(a.Exponent) + unsigned(b.Exponent) - Bias);
+		else
+        c.Mantissa := Result_mantissa(M-1 downto 0);
+        c.Exponent := std_logic_vector(unsigned(a.Exponent) + unsigned(b.Exponent) - Bias + 1);
+    end if;
+		
+		return c;
+	end;
+	
+	function float_sum (
+		a : in float; b : in float
+		)
+		return float is
+	
+		variable c : float;
+		variable aligned_mantissa_a, aligned_mantissa_b : std_logic_vector(M downto 0);
+		variable result_mantissa : std_logic_vector(M downto 0);
+		variable pos_one : integer := M + 1;
+		variable exp_diff : integer;
+	begin
+		-- Align exponents by shifting mantissas
+		if unsigned(a.Exponent) > unsigned(b.Exponent) then
+			exp_diff := to_integer(unsigned(a.Exponent)) - to_integer(unsigned(b.Exponent));
+			aligned_mantissa_a := '1' & a.Mantissa;
+			aligned_mantissa_b := std_logic_vector(unsigned(('1' & b.Mantissa)) srl exp_diff);
+			c.Exponent := a.Exponent;
+		else
+			exp_diff := to_integer(unsigned(b.Exponent)) - to_integer(unsigned(a.Exponent));
+			aligned_mantissa_a := std_logic_vector(unsigned('1' & a.Mantissa) srl exp_diff);
+			aligned_mantissa_b := '1' & b.Mantissa;
+			c.Exponent := b.Exponent;
+		end if;
+
+		-- Add or subtract mantissas based on signs
+		if a.Sign_bit = b.Sign_bit then
+			result_mantissa := std_logic_vector(unsigned(aligned_mantissa_a) + unsigned(aligned_mantissa_b));
+			c.Sign_bit := a.Sign_bit;
+		else
+			if unsigned(aligned_mantissa_a) > unsigned(aligned_mantissa_b) then
+				result_mantissa := std_logic_vector(unsigned(aligned_mantissa_a) - unsigned(aligned_mantissa_b));
+				c.Sign_bit := a.Sign_bit;
+			else
+				result_mantissa := std_logic_vector(unsigned(aligned_mantissa_b) - unsigned(aligned_mantissa_a));
+				c.Sign_bit := b.Sign_bit;
+			end if;
+		end if;
+
+		-- Normalize result mantissa
+		for i in M downto 0 loop
+			if result_mantissa(i) = '1' then
+				pos_one := i;
+				exit;
+			end if;
+		end loop;
+
+		if pos_one = (M + 1) then	--Result equals zero
+			c.Mantissa := (others => '0');
+			c.Exponent := (others => '0');
+		elsif pos_one = 0 then		--Mantissa zero
+			c.Mantissa := (others => '0');
+			c.Exponent := std_logic_vector(unsigned(c.Exponent) - M);
+		else
+			c.Mantissa := (others => '0');
+			c.Mantissa(M-1 downto (M-pos_one)) := result_mantissa(pos_one-1 downto 0);
+			c.Exponent := std_logic_vector(to_unsigned(to_integer(unsigned(c.Exponent)) + pos_one - M, E));
+		end if;
+		
+		return c;
+	end;
+	
+	function to_str (
+		a : in float)
+		return fixed_string is
+		variable result : fixed_string := (others => ' ');
+		variable sign : string(1 to 1);
+		variable exponent : string(1 to 5);
+		variable mantissa : string(1 to 23);
+	begin
+		-- Convert the sign bit to string
+		if a.Sign_bit = '1' then
+			sign := "-";
+		else
+			sign := "+";
+		end if;
+
+		-- Convert the exponent to decimal string
+		exponent := integer'image(to_integer(unsigned(a.Exponent)) - 127);
+
+		-- Convert the mantissa to string (binary representation)
+		mantissa := integer'image(to_integer(unsigned(a.Mantissa)));
+
+		-- Concatenate sign, exponent, and mantissa
+		result := sign & "1." & mantissa & "e" & exponent;
+		return result;
+	end;
+
+	function to_float (
+		a : in string)
+		return float is
+		variable result : float;
+		variable sign : std_logic;
+		variable exponent_value : integer;
+		variable mantissa_bin : std_logic_vector(M-1 downto 0);
+		variable exponent_str, mantissa_str : string;
+		variable e_pos, dot_pos : integer;
+		variable len_str : integer := a'length;
+	begin
+		-- Find the position of 'e' and '.'
+		e_pos := len_str + 1;
+		dot_pos := len_str + 1;
+		for i in 1 to len_str loop
+			if a(i) = 'e' then
+				e_pos := i;
+			elsif a(i) = '.' then
+				dot_pos := i;
+			end if;
+		end loop;
+
+		-- Extract and convert the sign
+		if a(1) = '-' then
+			sign := '1';
+		else
+			sign := '0';
+		end if;
+
+		-- Extract and convert the exponent
+		exponent_str := a(e_pos + 1 to len_str);
+		
+		exponent_value := integer'value(exponent_str);
+		exponent_value := exponent_value + Bias;
+		
+		result.Exponent := std_logic_vector(to_unsigned(exponent_value, E));
+
+		-- Extract and convert the mantissa
+		mantissa_str := a(dot_pos + 1 to e_pos - 1);
+
+		for i in M downto 1 loop
+			if i <= mantissa_str'length and mantissa_str(i) = '1' then
+				mantissa_bin(i - 1) := '1';
+			else
+				mantissa_bin(i - 1) := '0';
+			end if;
+		end loop;
+		result.Mantissa := mantissa_bin;
+
+		-- Assign the sign bit
+		result.Sign_bit := sign;
+
+		return result;
+	end;
+end package body FP_convert_pkg;

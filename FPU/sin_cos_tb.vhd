@@ -46,7 +46,7 @@ begin
 	begin
 		aux_x <= float_K;
 		aux_y <= float_zero;
-		aux_z <= ('0', "10000101", "00011000000000000000000");
+		aux_z <= str_to_float("+00011.75000");
 		aux_sigma <= '0';
 		wait for 10 ns;
 		

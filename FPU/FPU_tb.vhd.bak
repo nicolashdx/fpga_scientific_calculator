@@ -1,0 +1,80 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library work;
+use work.FloatPoint_package.all;
+use work.FP_convert_pkg.all;
+
+entity FPU_tb is
+end FPU_tb;
+
+architecture behavior of FPU_tb is
+    -- Signals for testing
+    constant float_1 : float := (	-- +1.1e+11
+        Sign_bit => '0',
+        Exponent => "10000010",
+        Mantissa => "10000000000000000000000"
+    );
+	 
+	 constant float_2 : float := (	-- -1.01e-10
+        Sign_bit => '1',
+        Exponent => std_logic_vector(to_unsigned(Bias - 2, E)),
+        Mantissa => ('0', '1', others => '0')
+    );
+	 
+	 constant float_3 : float := (	-- 1.10e+1
+        Sign_bit => '0',
+        Exponent => std_logic_vector(to_unsigned(Bias + 1, E)),
+        Mantissa => ('1', '0', others => '0')
+    );
+	 
+	 constant float_4 : float := (	-- -1.10e+1
+        Sign_bit => '1',
+        Exponent => std_logic_vector(to_unsigned(Bias + 1, E)),
+        Mantissa => ('1', '0', others => '0')
+    );
+	 
+    
+	component FPU is
+	port(
+		clock : in std_logic;
+		reset : in std_logic;
+		init : in std_logic;
+		op : in Operation;
+		a : in float;
+		b : in float;
+		
+		result : out float;
+		finished : out std_logic
+	);
+	end component;
+	
+	signal fio_clk, fio_reset, fio_init : std_logic := '0';
+	signal fio_op : Operation := Sum;
+	signal fio_a, fio_b : float := float_zero;
+	signal fio_c : float;
+	signal fio_finished : std_logic;
+begin
+	FPU_inst : FPU port map (
+		flock => fio_clk, 
+		reset => fio_reset, 
+		init => fio_init,
+		op => fio_op,
+		a => fio_a, 
+		b => fio_b,
+		result => fio_c,
+		finished => fio_finished
+	);
+	
+	fio_clock <= not fio_clock after 20 ns;
+	reset <= '0', '1' after 30 ns;
+	
+	a <= float_1;
+	b <= float_1;
+	
+	op <= sum, sub after 70 ns, mul after 110 ns
+	
+	init <= '1';
+
+end behavior;

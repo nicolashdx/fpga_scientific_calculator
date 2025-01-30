@@ -8,13 +8,13 @@ use work.FP_convert_pkg.all;
 
 Entity test2 is
 	port(
-		s : in string_dec;
-		x : out float
+		s : out string_dec;
+		x : in float
 	);
 end test2;
 
 
 architecture rtl of test2 is
 begin
-	x <= str_to_float(s);
+	s <= float_to_str(x);
 end rtl;

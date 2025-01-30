@@ -49,67 +49,67 @@ architecture behavior of FPU_tb is
 		finished : out std_logic
 	);
 	end component;
-	
-	signal fio_clk, fio_reset, fio_init : std_logic := '0';
-	signal fio_op : Operation := Sum;
-	signal fio_a, fio_b : float := float_zero;
-	signal fio_c : float;
-	signal fio_finished : std_logic;
-	signal fio_result : string_bin;
-	
-	constant CLOCK_PERID : time := 20 ns; 
+--	
+--	signal fio_clk, fio_reset, fio_init : std_logic := '0';
+--	signal fio_op : Operation := Sum;
+--	signal fio_a, fio_b : float := float_zero;
+--	signal fio_c : float;
+--	signal fio_finished : std_logic;
+--	signal fio_result : string_bin;
+--	
+--	constant CLOCK_PERID : time := 20 ns; 
 begin
-	FPU_inst : FPU port map (
-		clock => fio_clk, 
-		reset => fio_reset, 
-		init => fio_init,
-		op => fio_op,
-		a => fio_a, 
-		b => fio_b,
-		result => fio_c,
-		finished => fio_finished
-	);
-	
-	process 
-	begin
-		fio_clk <= '0';
-		wait for CLOCK_PERID/2;
-		fio_clk <= '1';
-		wait for CLOCK_PERID/2;
-	end process;
-	
-	process
-	begin
-		wait for CLOCK_PERID/2;
-		fio_reset <= '0';
-		fio_init <= '0';
-		wait for CLOCK_PERID;
-		fio_reset <= '1';
-		fio_init <= '0';
-		wait for CLOCK_PERID;
-		fio_result <= float_to_str_bin(fio_c); -- 0
-		fio_a <= float_1; -- 12 = (+1.100e+11)
-		fio_b <= float_1; -- 12 = (+1.100e+11)
-		fio_init <= '1';
-		fio_op <= sum;
-		wait for CLOCK_PERID;
-		wait until fio_finished = '1';
-		fio_result <= float_to_str_bin(fio_c); -- 24 = (+1.100e+100)
-		fio_a <= float_1; -- 12 = (+1.100e+11)
-		fio_b <= float_1; -- 12 = (+1.100e+11)
-		fio_init <= '1';
-		fio_op <= mul;
-		wait for CLOCK_PERID;
-		wait until fio_finished = '1';
-		fio_result <= float_to_str_bin(fio_c); -- 144 = (+1.001e+111)
-		fio_a <= float_1; -- 12 = (+1.100e+11)
-		fio_b <= float_1; -- 12 = (+1.100e+11)
-		fio_init <= '1';
-		fio_op <= sub;
-		wait for CLOCK_PERID;
-		wait until fio_finished = '1';
-		fio_result <= float_to_str_bin(fio_c); -- 0 = (+0.0e+0)
-		wait for CLOCK_PERID;
-		wait;
-	end process;
+--	FPU_inst : FPU port map (
+--		clock => fio_clk, 
+--		reset => fio_reset, 
+--		init => fio_init,
+--		op => fio_op,
+--		a => fio_a, 
+--		b => fio_b,
+--		result => fio_c,
+--		finished => fio_finished
+--	);
+--	
+--	process 
+--	begin
+--		fio_clk <= '0';
+--		wait for CLOCK_PERID/2;
+--		fio_clk <= '1';
+--		wait for CLOCK_PERID/2;
+--	end process;
+--	
+--	process
+--	begin
+--		wait for CLOCK_PERID/2;
+--		fio_reset <= '0';
+--		fio_init <= '0';
+--		wait for CLOCK_PERID;
+--		fio_reset <= '1';
+--		fio_init <= '0';
+--		wait for CLOCK_PERID;
+--		fio_result <= float_to_str_bin(fio_c); -- 0
+--		fio_a <= float_1; -- 12 = (+1.100e+11)
+--		fio_b <= float_1; -- 12 = (+1.100e+11)
+--		fio_init <= '1';
+--		fio_op <= sum;
+--		wait for CLOCK_PERID;
+--		wait until fio_finished = '1';
+--		fio_result <= float_to_str_bin(fio_c); -- 24 = (+1.100e+100)
+--		fio_a <= float_1; -- 12 = (+1.100e+11)
+--		fio_b <= float_1; -- 12 = (+1.100e+11)
+--		fio_init <= '1';
+--		fio_op <= mul;
+--		wait for CLOCK_PERID;
+--		wait until fio_finished = '1';
+--		fio_result <= float_to_str_bin(fio_c); -- 144 = (+1.001e+111)
+--		fio_a <= float_1; -- 12 = (+1.100e+11)
+--		fio_b <= float_1; -- 12 = (+1.100e+11)
+--		fio_init <= '1';
+--		fio_op <= sub;
+--		wait for CLOCK_PERID;
+--		wait until fio_finished = '1';
+--		fio_result <= float_to_str_bin(fio_c); -- 0 = (+0.0e+0)
+--		wait for CLOCK_PERID;
+--		wait;
+--	end process;
 end behavior;
