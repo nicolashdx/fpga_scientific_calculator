@@ -20,7 +20,7 @@ architecture Behavioral of debounce is
     signal counter : integer := 0;
     signal debounce_state : std_logic_vector(1 downto 0) := "00";
 	 
-    constant countupto : integer := 200;
+    constant countupto : integer := 1000;
 	 constant data_zeros : std_logic_vector(3 downto 0) := (others => '0');
 begin
 	 keypad_debounce <= keypad_debounce_aux;

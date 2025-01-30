@@ -13,7 +13,8 @@ entity top_level is
         col : out std_logic_vector(2 downto 0);
 		  switches : in std_logic_vector(11 downto 0);
 		  op : out Operation;
-        decoded_key : out std_logic_vector(3 downto 0)
+        decoded_key : out std_logic_vector(3 downto 0);
+		  change : out std_logic
     );
 end top_level;
 
@@ -67,4 +68,6 @@ begin
 			  switches => switches,
 			  op => op
         );
+		  
+		  change <= switches(9);
 end Behavioral;
