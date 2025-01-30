@@ -9,10 +9,7 @@ use work.FP_convert_pkg.all;
 entity decodifier is
     Port (
 		switches : in std_logic_vector(11 downto 0);
-		op : out Operation;
-		
-		keypad_debounce : in std_logic_vector(11 downto 0);
-		decoded_key : out std_logic_vector(3 downto 0)
+		op : out Operation
     );
 end decodifier;
 
@@ -37,22 +34,5 @@ begin
                 when others => op <= Zero;
             end case;
         end if;
-	end process;
-	
-	process(keypad_debounce)
-		begin
-			for i in 11 downto 3 loop
-				if keypad_debounce(i) = '1' then
-					decoded_key <= std_logic_vector(to_unsigned(i, 4));
-				end if;
-			end loop;
-			
-			if keypad_debounce(2) = '1' then
-				decoded_key <= "1010";
-			elsif keypad_debounce(1) = '1' then
-				decoded_key <= "0000";
-			elsif keypad_debounce(0) = '1' then
-				decoded_key <= "1011";
-			end if;
 	end process;
 end Behavioral;

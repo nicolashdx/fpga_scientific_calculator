@@ -31,22 +31,20 @@ architecture Behavioral of top_level is
 	 component decodifier is
     Port (
 		switches : in std_logic_vector(11 downto 0);
-		op : out Operation;
-		keypad_debounce : in std_logic_vector(11 downto 0);
-		decoded_key : out std_logic_vector(3 downto 0)
+		op : out Operation
     );
 	 end component;
 	 
 	 component debounce is
     Port (
         clk : in std_logic;
-        keypad_pressed : in std_logic_vector(11 downto 0);
-        keypad_debounce : out std_logic_vector(11 downto 0)
+        keypad_pressed : in std_logic_vector(3 downto 0);
+        keypad_debounce : out std_logic_vector(3 downto 0)
     );
 	 end component;
 
-    signal key_pressed : std_logic_vector(11 downto 0);
-    signal debounced_key : std_logic_vector(11 downto 0);
+    signal key_pressed : std_logic_vector(3 downto 0);
+    signal debounced_key : std_logic_vector(3 downto 0);
 begin
     keyboard_inst : keyboard
         Port map (
@@ -61,14 +59,12 @@ begin
         Port map (
             clk => clk,
             keypad_pressed => key_pressed,
-            keypad_debounce => debounced_key
+            keypad_debounce => decoded_key
         );
 
     decodifier_inst : decodifier
         Port map (
 			  switches => switches,
-			  op => op,
-			  keypad_debounce => debounced_key,
-			  decoded_key => decoded_key 
+			  op => op
         );
 end Behavioral;

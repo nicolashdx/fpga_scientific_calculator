@@ -9,19 +9,19 @@ use work.FP_convert_pkg.all;
 entity debounce is
     Port (
         clk : in std_logic;
-        keypad_pressed : in std_logic_vector(11 downto 0);
-        keypad_debounce : out std_logic_vector(11 downto 0)
+        keypad_pressed : in std_logic_vector(3 downto 0);
+        keypad_debounce : out std_logic_vector(3 downto 0)
     );
 end debounce;
 
 architecture Behavioral of debounce is
-    signal input_test : std_logic_vector(11 downto 0) := (others => '0');
-	 signal keypad_debounce_aux : std_logic_vector(11 downto 0);
+    signal input_test : std_logic_vector(3 downto 0) := (others => '0');
+	 signal keypad_debounce_aux : std_logic_vector(3 downto 0);
     signal counter : integer := 0;
     signal debounce_state : std_logic_vector(1 downto 0) := "00";
 	 
     constant countupto : integer := 1000;
-	 constant data_zeros : std_logic_vector(11 downto 0) := (others => '0');
+	 constant data_zeros : std_logic_vector(3 downto 0) := (others => '0');
 begin
 	 keypad_debounce <= keypad_debounce_aux;
 
