@@ -1,0 +1,81 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity keypad_scanner is
+    port ( 
+        row:      out std_logic_vector(3 downto 0);  -- Saída para ativar as linhas do teclado
+        column:   in  std_logic_vector(3 downto 0);  -- Entrada das colunas do teclado
+        key_value: out std_logic_vector(3 downto 0); -- Código binário da tecla pressionada
+        key_valid: out std_logic                     -- Indica quando uma tecla foi pressionada
+    );
+end entity keypad_scanner;
+
+architecture behavioral of keypad_scanner is
+    signal row_scan: std_logic_vector(3 downto 0) := "1110"; -- Começa ativando a primeira linha
+begin  
+    process(column)
+    begin
+        key_valid <= '0';  -- Por padrão, nenhuma tecla pressionada
+        key_value <= "0000";  -- Valor padrão
+
+        case row_scan is
+            -- Primeira linha do teclado (1, 2, 3, A)
+            when "1110" =>
+                case column is
+                    when "1110" => key_value <= "0001"; key_valid <= '1'; -- Tecla 1
+                    when "1101" => key_value <= "0010"; key_valid <= '1'; -- Tecla 2
+                    when "1011" => key_value <= "0011"; key_valid <= '1'; -- Tecla 3
+                    when "0111" => key_value <= "1010"; key_valid <= '1'; -- Tecla A
+                    when others => key_valid <= '0';
+                end case;
+            
+            -- Segunda linha do teclado (4, 5, 6, B)
+            when "1101" =>
+                case column is
+                    when "1110" => key_value <= "0100"; key_valid <= '1'; -- Tecla 4
+                    when "1101" => key_value <= "0101"; key_valid <= '1'; -- Tecla 5
+                    when "1011" => key_value <= "0110"; key_valid <= '1'; -- Tecla 6
+                    when "0111" => key_value <= "1011"; key_valid <= '1'; -- Tecla B
+                    when others => key_valid <= '0';
+                end case;
+            
+            -- Terceira linha do teclado (7, 8, 9, C)
+            when "1011" =>
+                case column is
+                    when "1110" => key_value <= "0111"; key_valid <= '1'; -- Tecla 7
+                    when "1101" => key_value <= "1000"; key_valid <= '1'; -- Tecla 8
+                    when "1011" => key_value <= "1001"; key_valid <= '1'; -- Tecla 9
+                    when "0111" => key_value <= "1100"; key_valid <= '1'; -- Tecla C
+                    when others => key_valid <= '0';
+                end case;
+
+            -- Quarta linha do teclado (*, 0, #, D)
+            when "0111" =>
+                case column is
+                    when "1110" => key_value <= "1110"; key_valid <= '1'; -- Tecla *
+                    when "1101" => key_value <= "0000"; key_valid <= '1'; -- Tecla 0
+                    when "1011" => key_value <= "1111"; key_valid <= '1'; -- Tecla #
+                    when "0111" => key_value <= "1101"; key_valid <= '1'; -- Tecla D
+                    when others => key_valid <= '0';
+                end case;
+
+            when others =>
+                key_valid <= '0';
+        end case;
+    end process;
+
+    -- Faz a varredura das linhas ciclando entre 1110, 1101, 1011 e 0111
+    process
+    begin
+        wait for 10 ms; -- Tempo para varredura
+        case row_scan is
+            when "1110" => row_scan <= "1101";
+            when "1101" => row_scan <= "1011";
+            when "1011" => row_scan <= "0111";
+            when "0111" => row_scan <= "1110";
+            when others => row_scan <= "1110";
+        end case;
+    end process;
+
+    row <= row_scan; -- Envia a linha ativa
+end architecture behavioral;
