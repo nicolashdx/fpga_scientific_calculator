@@ -278,7 +278,6 @@ write_en => next_state.OUTPUTSELECT
 write_en => next_state.OUTPUTSELECT
 write_en => next_state.OUTPUTSELECT
 write_en => next_state.OUTPUTSELECT
-write_en => next_state.OUTPUTSELECT
 write_en => idle_counter.OUTPUTSELECT
 write_en => idle_counter.OUTPUTSELECT
 write_en => idle_counter.OUTPUTSELECT

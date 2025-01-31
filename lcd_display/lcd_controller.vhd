@@ -18,7 +18,7 @@ PORT (
 END lcd_controller;
 
 ARCHITECTURE FSMD OF lcd_controller IS
-	TYPE state_type IS (s0, s1,s2,s3,s4,s10,s11,s12,s13,s20,s21,s22,s23,s24, w0, w1, w2, w3, w4, w5, w6);
+	TYPE state_type IS (s0, s1,s2,s3,s4,s10,s11,s12,s13,s20,s21,s22,s23,s24, w0, w1, w2, w3, w4, w5);
 	SIGNAL state, next_state: state_type := s0;
 
 	CONSTANT max: INTEGER := 1; --50000;
@@ -111,7 +111,7 @@ ARCHITECTURE FSMD OF lcd_controller IS
 						END IF;
 
 					-- LCD initialization sequence
-					-- The LCD_DATA is written to t'he LCD at the falling edge of the E line
+					-- The LCD_DATA is written to the LCD at the falling edge of the E line
 					-- therefore we need to toggle the E line for each data write
 					WHEN s0 =>
 						count <= 1;
