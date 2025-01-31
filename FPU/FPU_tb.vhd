@@ -10,32 +10,6 @@ entity FPU_tb is
 end FPU_tb;
 
 architecture behavior of FPU_tb is
-    -- Signals for testing
-    constant float_1 : float := (	-- (+1.1e+11)2 = 1.5*2^3 = 12
-        Sign_bit => '0',
-        Exponent => "10000010",
-        Mantissa => "10000000000000000000000"
-    );
-	 
-	 constant float_2 : float := (	-- -1.01e-10
-        Sign_bit => '1',
-        Exponent => std_logic_vector(to_unsigned(Bias - 2, E)),
-        Mantissa => ('0', '1', others => '0')
-    );
-	 
-	 constant float_3 : float := (	-- 1.10e+1
-        Sign_bit => '0',
-        Exponent => std_logic_vector(to_unsigned(Bias + 1, E)),
-        Mantissa => ('1', '0', others => '0')
-    );
-	 
-	 constant float_4 : float := (	-- -1.10e+1
-        Sign_bit => '1',
-        Exponent => std_logic_vector(to_unsigned(Bias + 1, E)),
-        Mantissa => ('1', '0', others => '0')
-    );
-	 
-    
 	component FPU is
 	port(
 		clock : in std_logic;
@@ -52,12 +26,26 @@ architecture behavior of FPU_tb is
 	
 	signal fio_clk, fio_reset, fio_init : std_logic := '0';
 	signal fio_op : Operation := Sum;
-	signal fio_a, fio_b : float := float_zero;
-	signal fio_c : float;
+	signal fio_a, fio_b, fio_c : float;
 	signal fio_finished : std_logic;
-	signal fio_result : string_bin;
+	signal str_a, str_b, str_result : string_dec;
+	signal complete : std_logic := '0';
 	
-	constant CLOCK_PERID : time := 20 ns; 
+	constant CLOCK_PERID : time := 20 ns;
+	constant tam_data : integer := 5;
+	
+	type numbers_array is array(tam_data-1 downto 0) of string_dec;
+	signal table_a : numbers_array := (
+		"+00001.75000", "+00001.68000", "+00001.75000", "+00007.00000", "+00001.75000"
+	);
+	signal table_b : numbers_array := (
+		"+00000.75000", "+00000.68000", "+00005.00000", "+00001.68000", "+00000.50000"
+	);
+	
+	type operation_array is array(tam_data-1 downto 0) of Operation;
+	signal table_op : operation_array := (
+		Sum, Sub, Mul, sum, Mul
+	);
 begin
 	FPU_inst : FPU port map (
 		clock => fio_clk, 
@@ -72,10 +60,14 @@ begin
 	
 	process 
 	begin
-		fio_clk <= '0';
-		wait for CLOCK_PERID/2;
-		fio_clk <= '1';
-		wait for CLOCK_PERID/2;
+		while complete = '0' loop
+			fio_clk <= '0';
+			wait for CLOCK_PERID/2;
+			fio_clk <= '1';
+			wait for CLOCK_PERID/2;
+		end loop;
+		
+		wait;
 	end process;
 	
 	process
@@ -85,31 +77,28 @@ begin
 		fio_init <= '0';
 		wait for CLOCK_PERID;
 		fio_reset <= '1';
-		fio_init <= '0';
-		wait for CLOCK_PERID;
-		fio_result <= float_to_str_bin(fio_c); -- 0
-		fio_a <= float_1; -- 12 = (+1.100e+11)
-		fio_b <= float_1; -- 12 = (+1.100e+11)
-		fio_init <= '1';
-		fio_op <= sum;
-		wait for CLOCK_PERID;
-		wait until fio_finished = '1';
-		fio_result <= float_to_str_bin(fio_c); -- 24 = (+1.100e+100)
-		fio_a <= float_1; -- 12 = (+1.100e+11)
-		fio_b <= float_1; -- 12 = (+1.100e+11)
-		fio_init <= '1';
-		fio_op <= mul;
-		wait for CLOCK_PERID;
-		wait until fio_finished = '1';
-		fio_result <= float_to_str_bin(fio_c); -- 144 = (+1.001e+111)
-		fio_a <= float_1; -- 12 = (+1.100e+11)
-		fio_b <= float_1; -- 12 = (+1.100e+11)
-		fio_init <= '1';
-		fio_op <= sub;
-		wait for CLOCK_PERID;
-		wait until fio_finished = '1';
-		fio_result <= float_to_str_bin(fio_c); -- 0 = (+0.0e+0)
-		wait for CLOCK_PERID;
+		
+		for i in tam_data-1 downto 0 loop
+			wait for CLOCK_PERID;
+			str_a <= table_a(i);
+			str_b <= table_b(i);
+			str_result <= float_to_str(fio_c);
+			fio_op <= table_op(i);
+			
+			wait for CLOCK_PERID;
+			fio_init <= '1';
+			
+			fio_a <= str_to_float(str_a); 
+			fio_b <= str_to_float(str_b);
+			
+			wait until fio_finished = '1';
+			fio_init <= '0';
+		end loop;
+		
+		
+		str_result <= float_to_str(fio_c);
+		complete <= '1'; 
+		wait for 3*CLOCK_PERID;
 		wait;
 	end process;
 end behavior;

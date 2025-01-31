@@ -21,10 +21,22 @@ entity FPU is
 end FPU;
 
 architecture behavior of FPU is
-	type estados is (waiting, execution, finishing);
+	component c_CORCDIC_SIN_COS is
+	port(
+		x_0, y_0, z_0 : in float;
+		j : in integer range 0 to max_interacao-1;
+		sigma_0 : in std_logic;
+		
+		x, y, z : out float;
+		sigma : out std_logic
+	);
+	end component;
 	
-	signal estado_atual : estados := waiting;
-	signal estado_proxi : estados := waiting;
+	
+	type estados is (waiting, execution, finishing);
+	signal estado_atual, estado_proxi : estados := waiting;
+	
+	signal count : integer := 0;
 begin
 	process(clock, reset)
 	begin
@@ -36,7 +48,6 @@ begin
 	end process;
 	
 	process(estado_atual, estado_proxi, op, init, a, b)
-		variable count : integer range 0 to max_interacao-1 := 0;
 	begin
 		case estado_atual is
 			When execution =>
@@ -51,12 +62,36 @@ begin
 				elsif op = Mul then
 					result <= float_product(a, b);
 					estado_proxi <= finishing;
-				elsif op = Cos or op = Sin then
+				elsif op = cos or op = sin then
 					if count = 0 then
-						
+						count <= count + 1;
 					elsif count = max_interacao-1 then
+						count <= 0;
+						estado_proxi <= finishing;
 					else
+						count <= count + 1;
 					end if;
+					
+--					aux_x <= float_K;
+--					aux_y <= float_zero;
+--					aux_z <= str_to_float("+00011.75000");
+--					aux_sigma <= '0';
+--					wait for 10 ns;
+--					
+--					fio_j <= count;
+--					fio_x_0 <= aux_x;
+--					fio_y_0 <= aux_y;
+--					fio_z_0 <= aux_z;
+--					fio_sigma_0 <= aux_sigma;
+--					wait for 10 ns;
+--					
+--					aux_x <= fio_x;
+--					aux_y <= fio_y;
+--					aux_z <= fio_z;
+--					aux_sigma <= fio_z.Sign_bit;
+--					wait for 10 ns;
+--					wait for 10 ns;
+--					wait;																								
 				else
 					result <= float_zero;
 					estado_proxi <= finishing;

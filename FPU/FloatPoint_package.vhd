@@ -86,19 +86,6 @@ package FloatPoint_package is
 		"00101110111001010010111011100000"
 	);
 	
-	procedure p_CORCDIC_SIN_COS (
-		signal x_0 : in float;
-		signal y_0 : in float; 
-		signal z_0 : in float;
-		signal j : in integer range 0 to max_interacao-1;
-		signal sigma_0 : in std_logic;
-		
-		signal x : out float;
-		signal y : out float; 
-		signal z : out float;
-		signal sigma : out std_logic
-	);
-	
 end package FloatPoint_package;
 
 package body FloatPoint_package is
@@ -232,41 +219,4 @@ package body FloatPoint_package is
 		
 		return result;
 	end;
-	
-	procedure p_CORCDIC_SIN_COS (
-		signal x_0 : in float; 
-		signal y_0 : in float; 
-		signal z_0 : in float;
-		signal j : in integer range 0 to max_interacao-1;
-		signal sigma_0 : in std_logic;
-		
-		signal x : out float;
-		signal y : out float; 
-		signal z : out float;
-		signal sigma : out std_logic
-		) is
-		
-		variable atan_bin : std_logic_vector(E+M downto 0);
-		variable atan_value : float;
-		variable z_out : float;
-	begin
-		atan_bin := atan_table(j);
-			
-		atan_value.Sign_bit := atan_bin(E+M);
-		atan_value.Exponent := atan_bin(E+M-1 downto M);
-		atan_value.Mantissa := atan_bin(M-1 downto 0);
-	
-		if sigma_0 = '0' then
-			x <= float_sub(x_0, float_srl(y_0, -j));
-			y <= float_sum(y_0, float_srl(x_0, -j));
-			z_out := float_sub(z_0, atan_value);
-		else
-			x <= float_sum(x_0, float_srl(y_0, -j));
-			y <= float_sub(y_0, float_srl(x_0, -j));
-			z_out := float_sum(z_0, atan_value);
-		end if;
-		
-		sigma <= z_out.Sign_bit;
-		z <= z_out;
-	end procedure p_CORCDIC_SIN_COS;
 end package body FloatPoint_package;
