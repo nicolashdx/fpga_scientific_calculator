@@ -7,19 +7,22 @@ ENTITY lcd_controller IS
 PORT (
 	DATA: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
 	Clk50Mhz, reset, write_en: IN STD_LOGIC;
+	
 	LCD_DATA: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 	LCD_RW, LCD_EN, LCD_RS: OUT STD_LOGIC;
 	LCD_ON, LCD_BLON: OUT STD_LOGIC;
-	state_out: OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
+	
+	state_out: out STD_LOGIC_VECTOR(4 DOWNTO 0);
+	count_out : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
 );
 END lcd_controller;
 
 ARCHITECTURE FSMD OF lcd_controller IS
-	TYPE state_type IS (s0, s1,s2,s3,s4,s10,s11,s12,s13,s20,s21,s22,s23,s24, w1, w2, w3, w4);
+	TYPE state_type IS (s0, s1,s2,s3,s4,s10,s11,s12,s13,s20,s21,s22,s23,s24, w0, w1, w2, w3, w4, w5, w6);
 	SIGNAL state, next_state: state_type := s0;
 
-	CONSTANT max: INTEGER := 5; --50000;
-	CONSTANT half: INTEGER := max/2;
+	CONSTANT max: INTEGER := 1; --50000;
+	CONSTANT half: INTEGER := max;--/2;
 
 	SIGNAL clockticks: INTEGER RANGE 0 TO max;
 	SIGNAL clock: STD_LOGIC := '0';
@@ -47,7 +50,7 @@ ARCHITECTURE FSMD OF lcd_controller IS
 	CONSTANT timeout_value: INTEGER := 5000;
 
 	SIGNAL idle_counter: INTEGER RANGE 0 TO timeout_value;
-	
+
 	BEGIN
 		 state_machine: PROCESS(clock, reset)
 			 BEGIN	 
@@ -58,44 +61,54 @@ ARCHITECTURE FSMD OF lcd_controller IS
 			 END IF;
 		 END PROCESS;
 		 
-		 lcd_control: PROCESS(clock, state)
+		 lcd_control: PROCESS(clock, state, count)
 			BEGIN
 			IF (rising_edge(clock)) THEN
+			
+				state_out <= std_logic_vector(to_unsigned(state_type'pos(state), 5));
+				count_out <= std_logic_vector(to_unsigned(count, 8));
+			
 				LCD_ON <= '1';
 				LCD_BLON <= '1';
 				
-				state_out <= std_logic_vector(to_unsigned(state_type'POS(state), 5));
-				
 				CASE state IS
+					WHEN w0 =>
+						buffer_temp <= (OTHERS => x"20");
+						line1 <= (OTHERS => x"20");
+						line2 <= (OTHERS => x"20");
+						count <= 1;
+						next_state <= w1;
 					WHEN w1 => -- ESTADO QUE RECEBE OS CARACTERES PELO BARRAMENTO DATA E GUARDA EM UM BUFFER
 						IF(count < 32) THEN
 							buffer_temp(count) <= DATA;
 							count <= count + 1;
-							next_state <= w1;
 						ELSE
-							count <= 1;
-							temp <= 1;
 							next_state <= w2;
 						END IF;
-
-					WHEN w2 => -- ESTADO QUE ARMAZENA OS CARACTERES DO BUFFER NO VETOR DA LINHA 1
+					WHEN w2 =>
+						count <= 1;
+						temp <= 1;
+						next_state <= w3;
+					WHEN w3 => -- ESTADO QUE ARMAZENA OS CARACTERES DO BUFFER NO VETOR DA LINHA 1
 						IF(buffer_temp(count) /= x"20" AND count < 16) THEN
 							line1(count) <= buffer_temp(count);
-							next_state <= w2;
+							count <= count+1;
 						ELSE
-							next_state <= w3;
+							next_state <= w4;
 						END IF;
-						count <= count+1;
-
-					WHEN w3 => -- ESTADO QUE ARMAZENA OS CARACTERES DO BUFFER NO VETOR DA LINHA 2
+					WHEN w4 =>
+						IF(buffer_temp(count) = x"20") THEN
+							count <= count+1;
+						END IF;
+						next_state <= w5;
+					WHEN w5 => -- ESTADO QUE ARMAZENA OS CARACTERES DO BUFFER NO VETOR DA LINHA 2
 						IF(buffer_temp(count) /= x"20" AND count < 32) THEN
-							line2(count) <= buffer_temp(count);
-							next_state <= w3;
+							line2(temp) <= buffer_temp(count);
+							temp <= temp+1;
+							count <= count+1;
 						ELSE
-							buffer_temp <= (OTHERS => x"20");
 							next_state <= s0;
 						END IF;
-						count <= count+1;
 
 					-- LCD initialization sequence
 					-- The LCD_DATA is written to t'he LCD at the falling edge of the E line
@@ -138,8 +151,10 @@ ARCHITECTURE FSMD OF lcd_controller IS
 						next_state <= s13;
 					WHEN s13 =>
 						LCD_EN <= '0'; -- EN=0; toggle EN
-						count <= count + 1;
-						IF count < 16 THEN
+						IF(next_state /= s12) THEN
+							count <= count + 1;
+						END IF;
+						IF count < 15 THEN
 							next_state <= s12;
 						ELSE
 							next_state <= s20;
@@ -164,22 +179,22 @@ ARCHITECTURE FSMD OF lcd_controller IS
 						next_state <= s23;
 					WHEN s23 =>
 						LCD_EN <= '0'; -- set EN=0;
-						count <= count + 1;
-						IF count < 16 THEN
+						IF (next_state /= s22) THEN
+							count <= count + 1;
+						END IF;
+						IF count < 15 THEN
 							next_state <= s22;
 						ELSE
 							next_state <= s24;
 						END IF;
 					WHEN s24 =>
 					IF (write_en = '1') THEN
-						buffer_temp <= (OTHERS => x"20");
-						line1 <= (OTHERS => x"20");
-						line2 <= (OTHERS => x"20");
-						count <= 1;
-						next_state <= w1;
+						next_state <= w0;
 					ELSE
-						idle_counter <= idle_counter + 1;
-						IF idle_counter = timeout_value THEN
+						IF idle_counter < timeout_value THEN
+							idle_counter <= idle_counter + 1;
+						ELSIF idle_counter = timeout_value THEN
+							idle_counter <= 0;
 							next_state <= s0; -- Reinicializa caso timeout ocorra
 						END IF;
 					END IF;
