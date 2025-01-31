@@ -1,5 +1,7 @@
 # Calculadora Científica FPGA - VHDL
 
+[Apresentação](https://docs.google.com/presentation/d/e/2PACX-1vQafuoJSYMYlyhdVtxxtEMY4ZAB_8_T9ilydgadJg5n-mJ4pe5nwp9pKuyHts4smLtcndzDg0zI0W74/pub?start=true&loop=true&delayms=60000)
+
 ## **Descrição do Projeto**
 Este projeto é uma calculadora científica implementada em VHDL, utilizando um FPGA. A interface consiste em um teclado matricial para entrada de dados e um display LCD 16x2 para exibição de operações e resultados. O projeto visa integrar conceitos de sistemas digitais com aplicações matemáticas avançadas.
 
