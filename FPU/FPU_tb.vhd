@@ -10,96 +10,32 @@ entity FPU_tb is
 end FPU_tb;
 
 architecture behavior of FPU_tb is
-   
-	
-	signal fio_clk, fio_reset, fio_init : std_logic := '0';
-	signal fio_op : Operation := Sum;
-	signal fio_a, fio_b : float := float_zero;
-	signal fio_c : float;
-	signal fio_finished : std_logic;
-	
-	signal fio_value_a : string_dec;
-	signal fio_value_b : string_dec;
-	signal fio_result : string_dec;
-	
-	constant PERIOD :  := 20;
-	signal complete : std_logic := '0';
-begin
-	
-	
-	process 
-	begin
-		while complete = '0' loop
-			fio_clk <= '0';
-			wait for CLOCK_PERIOD/2;
-			fio_clk <= '1';
-			wait for CLOCK_PERIOD/2;
-		end loop;
-		
-		wait;
-	end process;
-	
-	
-	process    -- clock process for clock
-   begin
-		wait for offset;
-		
-		clock_loop : loop
-			clk <= '0';
-			wait for (PERIOD - (PERIOD * DUTY_CYCLE));
-			clk <= '1';
-			wait for (PERIOD * DUTY_CYCLE);
-		end loop CLOCK_LOOP;
-	end process;
-	
-	process
-	begin
-		-- iniciacao do modulo
-		wait for CLOCK_PERIOD/2;
-		fio_reset <= '0';
-		fio_init <= '0';
-		
-		wait for CLOCK_PERIOD;
-		fio_reset <= '1';
-		fio_init <= '0';
-		
-		fio_value_a <= "+00004.00000";
-		fio_value_b <= "+00000.75000";
-		
-		-- atribuicao dos valores para FPU
-		wait for CLOCK_PERIOD;
-		fio_result <= float_to_str(fio_c); -- 0
-		
-		fio_init <= '1';
-		fio_a <= str_to_float(fio_value_a);
-		fio_b <= str_to_float(fio_value_b);
-		
-		fio_op <= mul;
-		
-		wait until fio_finished = '1';
-		fio_result <= float_to_str(fio_c); -- 1.75
-		
-		wait for CLOCK_PERIOD;
-		
-		complete <= '1';
-		wait;
-	end process;
-end behavior;
-
-
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use ieee.std_logic_textio.all;
-use std.textio.all;
-use ieee.numeric_std.all;
- 
-ENTITY FPU_tb IS
-END FPU_tb;
- 
-ARCHITECTURE behavior OF FPU_tb IS 
-	-- Component Declaration for the Unit Under Test (UUT)
+    -- Signals for testing
+    constant float_1 : float := (	-- (+1.1e+11)2 = 1.5*2^3 = 12
+        Sign_bit => '0',
+        Exponent => "10000010",
+        Mantissa => "10000000000000000000000"
+    );
+	 
+	 constant float_2 : float := (	-- -1.01e-10
+        Sign_bit => '1',
+        Exponent => std_logic_vector(to_unsigned(Bias - 2, E)),
+        Mantissa => ('0', '1', others => '0')
+    );
+	 
+	 constant float_3 : float := (	-- 1.10e+1
+        Sign_bit => '0',
+        Exponent => std_logic_vector(to_unsigned(Bias + 1, E)),
+        Mantissa => ('1', '0', others => '0')
+    );
+	 
+	 constant float_4 : float := (	-- -1.10e+1
+        Sign_bit => '1',
+        Exponent => std_logic_vector(to_unsigned(Bias + 1, E)),
+        Mantissa => ('1', '0', others => '0')
+    );
+	 
+    
 	component FPU is
 	port(
 		clock : in std_logic;
@@ -113,31 +49,17 @@ ARCHITECTURE behavior OF FPU_tb IS
 		finished : out std_logic
 	);
 	end component;
-    
-	signal clk              : std_logic;
-	signal rst              : std_logic;
-	signal data_in          : std_logic;
-	signal data_output      : std_logic;
-	constant max_value      : natural := 4;
-	constant mim_value		: natural := 1;
-
-
-	signal read_data_in    : std_logic:='0';
-	signal flag_write      : std_logic:='0';   
-
-
-	file   inputs_data_in  : text open read_mode  is "data_in.txt";
-	file   outputs         : text open write_mode is "outputs.txt";
-
-
-	-- Clock period definitions
-	constant PERIOD     : time := 20 ns;
-	constant DUTY_CYCLE : real := 0.5;
-   constant OFFSET     : time := 5 ns;
- 
-BEGIN
-	-- Instantiate the Unit Under Test (UUT) or Design Under Test (DUT)
-	DUT : FPU port map (
+	
+	signal fio_clk, fio_reset, fio_init : std_logic := '0';
+	signal fio_op : Operation := Sum;
+	signal fio_a, fio_b : float := float_zero;
+	signal fio_c : float;
+	signal fio_finished : std_logic;
+	signal fio_result : string_bin;
+	
+	constant CLOCK_PERID : time := 20 ns; 
+begin
+	FPU_inst : FPU port map (
 		clock => fio_clk, 
 		reset => fio_reset, 
 		init => fio_init,
@@ -147,87 +69,47 @@ BEGIN
 		result => fio_c,
 		finished => fio_finished
 	);
-
-------------------------------------------------------------------------------------
------------------ processo para gerar o estimulo de reset
-------------------------------------------------------------------------------------		
-	sreset: process
-	begin
-		rst <= '1';
-		for i in 1 to 4 loop
-			wait until rising_edge(clk);
-		end loop;
-		rst <= '0'; 
-		wait;	
-	end process sreset;
 	
-	
-------------------------------------------------------------------------------------
------------------ processo para leer os dados do arquivo data_in.txt
-------------------------------------------------------------------------------------
-read_inputs_data_in:process
-		variable linea : line;
-		variable input : std_logic;
+	process 
 	begin
-	    wait until falling_edge(clk);
-		while not endfile(inputs_data_in) loop
-		      if read_data_in = '1' then
-			     readline(inputs_data_in,linea);
-				 read(linea,input);
-				 data_in <= input;
-			  end if;
-			  wait for PERIOD;
-		end loop;
+		fio_clk <= '0';
+		wait for CLOCK_PERID/2;
+		fio_clk <= '1';
+		wait for CLOCK_PERID/2;
+	end process;
+	
+	process
+	begin
+		wait for CLOCK_PERID/2;
+		fio_reset <= '0';
+		fio_init <= '0';
+		wait for CLOCK_PERID;
+		fio_reset <= '1';
+		fio_init <= '0';
+		wait for CLOCK_PERID;
+		fio_result <= float_to_str_bin(fio_c); -- 0
+		fio_a <= float_1; -- 12 = (+1.100e+11)
+		fio_b <= float_1; -- 12 = (+1.100e+11)
+		fio_init <= '1';
+		fio_op <= sum;
+		wait for CLOCK_PERID;
+		wait until fio_finished = '1';
+		fio_result <= float_to_str_bin(fio_c); -- 24 = (+1.100e+100)
+		fio_a <= float_1; -- 12 = (+1.100e+11)
+		fio_b <= float_1; -- 12 = (+1.100e+11)
+		fio_init <= '1';
+		fio_op <= mul;
+		wait for CLOCK_PERID;
+		wait until fio_finished = '1';
+		fio_result <= float_to_str_bin(fio_c); -- 144 = (+1.001e+111)
+		fio_a <= float_1; -- 12 = (+1.100e+11)
+		fio_b <= float_1; -- 12 = (+1.100e+11)
+		fio_init <= '1';
+		fio_op <= sub;
+		wait for CLOCK_PERID;
+		wait until fio_finished = '1';
+		fio_result <= float_to_str_bin(fio_c); -- 0 = (+0.0e+0)
+		wait for CLOCK_PERID;
 		wait;
-	end process read_inputs_data_in;	
-	
-------------------------------------------------------------------------------------
------------------ processo para gerar os estimulos de entrada
-------------------------------------------------------------------------------------
-	
-   tb_stimulus : PROCESS
-   BEGIN
-        WAIT FOR (OFFSET + 3*PERIOD);
-            read_data_in <= '1';		
-			for i in mim_value to max_value loop
-		        wait for PERIOD;
-		    end loop;
-            read_data_in <= '0';		
-		WAIT;
-   END PROCESS tb_stimulus;	
-   
-------------------------------------------------------------------------------------
------- processo para gerar os estimulos de escrita do arquivo de saida
-------------------------------------------------------------------------------------   
-   
-   -- escreve_outputs : PROCESS
-   -- BEGIN
-        -- WAIT FOR (OFFSET + 4*PERIOD);
-            -- flag_write <= '1';
-			-- for i in mim_value to max_value loop
-		        -- wait for PERIOD;
-		    -- end loop;
-            -- flag_write <= '0';			
-		-- WAIT;
-   -- END PROCESS escreve_outputs;   
-   
--- ------------------------------------------------------------------------------------
--- ------ processo para escriber os dados de saida no arquivo .txt
--- ------------------------------------------------------------------------------------   
-   
-	-- write_outputs:process
-		-- variable linea  : line;
-		-- variable output : std_logic_vector (31 downto 0);
-	-- begin
-	    -- wait until clk ='0';
-		-- while true loop
-			-- if (flag_write ='1')then
-				-- output := q_ortonorma;
-				-- write(linea,output);
-				-- writeline(outputs,linea);
-			-- end if;
-			-- wait for PERIOD;
-		-- end loop; 
-	-- end process write_outputs;   	
-END;
-
+	end process;
+end behavior;
