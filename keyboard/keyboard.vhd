@@ -1,92 +1,124 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
 
 entity keyboard is
-    Port (
-			clk, reset : in std_logic;
-			row : in std_logic_vector(3 downto 0);
-			col : out std_logic_vector(2 downto 0);
-			key_pressed : out std_logic_vector(3 downto 0);
-			pressing : out std_logic
-    );
+    Port ( col : out  STD_LOGIC_VECTOR (3 downto 0);
+           row : in  STD_LOGIC_VECTOR (3 downto 0);
+			  data : out STD_LOGIC_VECTOR (3 downto 0);
+			  nreset	:	in STD_lOGIC;
+			  clk	: in STD_LOGIC;
+			  keyP : out STD_LOGIC);
+			  
 end keyboard;
 
-architecture Behavioral of keyboard is
-    type detector_state is (col1, col2, col3);
-	 signal state, next_state: detector_state;
+architecture FSM of keyboard is
+	TYPE detector_state IS (col1set, col2set, col3set, col4set);
+	signal state, next_state: detector_state;
 begin
-	 process(reset, clk)
-    begin
-        if reset='1' then
-            state <= col1;
-        elsif rising_edge(clk) then
-            state <= next_state;
-        end if;
-    end process;
+process (clk, nReset)
+begin
+if (nReset = '1') then
+	state <= col1set;
+elsif (rising_edge(clk)) then
+	state <= next_state;
+end if;
+end process;
 
-    process(state, row)
-    begin
-        case state is
-            when col1 =>
-                col <= "110";
-                pressing <= '0';
-                if row = "1110" then
-                    key_pressed <= "0001"; -- 1
-                    pressing <= '1';
-                elsif row = "1101" then
-                    key_pressed <= "0100"; -- 4
-                    pressing <= '1';
-                elsif row = "1011" then
-                    key_pressed <= "0111"; -- 7
-                    pressing <= '1';
-					 elsif row = "0111" then
-                    key_pressed <= "1010"; -- *
-                    pressing <= '1';
-                else
-                    key_pressed <= "0000";
-                end if;
-                next_state <= col2;
-            when col2 =>
-                col <= "101";
-                pressing <= '0';
-                if row = "1110" then
-                    key_pressed <= "0010"; -- 2
-                    pressing <= '1';
-                elsif row = "1101" then
-                    key_pressed <= "0101"; -- 5
-                    pressing <= '1';
-                elsif row = "1011" then
-                    key_pressed <= "1000"; -- 8
-                    pressing <= '1';
-					 elsif row = "0111" then
-                    key_pressed <= "1011"; -- 0
-                    pressing <= '1';
-                else
-                    key_pressed <= "0000";
-                end if;
-                next_state <= col3;
-            when col3 =>
-                col <= "011";
-                pressing <= '0';
-                if row = "1110" then
-                    key_pressed <= "0011"; -- 3
-                    pressing <= '1';
-                elsif row = "1101" then
-                    key_pressed <= "0110"; -- 6
-                    pressing <= '1';
-                elsif row = "1011" then
-                    key_pressed <= "1001"; -- 9
-                    pressing <= '1';
-					 elsif row = "0111" then
-                    key_pressed <= "1001"; -- #
-                    pressing <= '1';
-                else
-                    key_pressed <= "0000";
-                end if;
-                next_state <= col1;
-            when others =>
-                    next_state <= col1;
-            end case;
-    end process;
-end Behavioral;
+process (state)
+begin
+	case state is
+			when col1set =>
+				col <= "1110";
+				keyP <= '0';
+						if row = "1110" then
+							data <= "0001"; -- 1
+							keyP <= '1'; -- 
+						elsif row = "1101" then
+							data <= "0010"; -- 2
+							keyP <= '1';
+						elsif row = "1011" then
+							data <= "0011"; -- 3
+							keyP <= '1';
+						elsif row = "0111" then
+							data <= "0100"; -- 4
+							keyP <= '1';
+						else
+							data <= "0000";
+							next_state <= col2set;
+						end if;
+
+			when col2set =>
+				col <= "1101";
+				keyP <= '0';
+						if row = "1110" then
+							data <= "0101"; -- 5
+							keyP <= '1';
+						elsif row = "1101" then
+							data <= "0110"; -- 6
+							keyP <= '1';
+						elsif row = "1011" then
+							data <= "0111"; -- 7
+							keyP <= '1';
+						elsif row = "0111" then
+							data <= "1000"; -- 8
+							keyP <= '1';
+						else
+							data <= "0000";
+							next_state <= col3set;
+						end if;
+			when col3set =>
+				col <= "1011";
+				keyP <= '0';
+						if row = "1110" then
+							data <= "1001"; -- 9
+							keyP <= '1';
+						elsif row = "1101" then
+							data <= "1010"; -- 10
+							keyP <= '1';
+						elsif row = "1011" then
+							data <= "1011"; -- 11
+							keyP <= '1';
+						elsif row = "0111" then
+							data <= "1100"; -- 12
+							keyP <= '1';
+						else
+							data <= "0000";
+							next_state <= col2set;
+						end if;
+			when col4set =>
+				col <= "0111";
+				keyP <= '0';
+						if row = "1110" then
+							data <= "1101"; -- 13
+							keyP <= '1';
+						elsif row = "1101" then
+							data <= "1110"; -- 14
+							keyP <= '1';
+						elsif row = "1011" then
+							data <= "1111"; -- 15
+							keyP <= '1';
+						elsif row = "0111" then
+							data <= "0000"; -- 16
+							keyP <= '1';
+						else
+							data <= "0000";
+							next_state <= col4set;
+						end if;
+				end case;
+		
+	case state is
+		when col1set => 
+			next_state <= col2set;
+		when col2set =>
+			next_state <= col3set;
+		when col3set => 
+			next_state <= col4set;
+		when col4set =>
+			next_state <= col1set;
+		when others =>
+			next_state <= col1set;
+	end case;
+		
+	
+	end process;
+end FSM;
