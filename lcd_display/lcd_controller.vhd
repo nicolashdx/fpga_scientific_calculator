@@ -195,7 +195,7 @@ ARCHITECTURE FSMD OF lcd_controller IS
 							idle_counter <= idle_counter + 1;
 						ELSIF idle_counter = timeout_value THEN
 							idle_counter <= 0;
-							next_state <= s0; -- Reinicializa caso timeout ocorra
+							next_state <= s10; -- Reinicializa caso timeout ocorra
 						END IF;
 					END IF;
 					WHEN OTHERS =>
